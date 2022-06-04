@@ -7,8 +7,8 @@ def auth_route(app, users_collection):
     @app.route("/api/v1/register", methods=["POST"])
     def register():
         new_user = request.get_json()  # store the json body request
-        if not new_user['username'] or not new_user['password']:
-            return jsonify({"result": False, "message": "Missing username or password"}), 400
+        if new_user["username"] == '' or new_user["password"] == '':
+            return jsonify({'msg': 'No input data provided'}), 400
 
         new_user["password"] = generate_password_hash(
             new_user["password"])  # encrpt password
@@ -23,7 +23,7 @@ def auth_route(app, users_collection):
     @app.route("/api/v1/login", methods=["POST"])
     def login():
         login_details = request.get_json()  # store the json body request
-        if not login_details["username"] or not login_details["password"]:
+        if login_details["username"] == '' or login_details["password"] == '':
             return jsonify({'msg': 'No input data provided'}), 400
 
         user_from_db = users_collection.find_one(
