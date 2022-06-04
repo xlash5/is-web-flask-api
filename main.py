@@ -6,8 +6,10 @@ import os
 from routes.home import home_route
 from routes.auth import auth_route
 from routes.user import user_route
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = os.urandom(32)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
@@ -19,7 +21,7 @@ db = client["mydb"]
 users_collection = db["users"]
 
 home_route(app)  # home route "/"
-auth_route(app, users_collection)  # "/api/v1/users" , "/api/v1/login"
+auth_route(app, users_collection)  # "/api/v1/register" , "/api/v1/login"
 user_route(app, users_collection)  # "/api/v1/user"
 
 
