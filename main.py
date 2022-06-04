@@ -7,12 +7,14 @@ from routes.home import home_route
 from routes.auth import auth_route
 from routes.user import user_route
 from flask_cors import CORS
+from utils.blacklist import BLACKLIST
 
 app = Flask(__name__)
 CORS(app)
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = os.urandom(32)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
+app.config['JWT_BLACKLIST_ENABLED'] = True
 
 # connection string
 client = MongoClient(
@@ -33,6 +35,11 @@ def missing_token_callback(error):
 @jwt.unauthorized_loader
 def missing_token_callback(error):
     return {'result': False}, 401
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    return jwt_payload['jti'] in BLACKLIST
 
 
 if __name__ == '__main__':

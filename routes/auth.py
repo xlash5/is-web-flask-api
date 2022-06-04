@@ -1,6 +1,7 @@
 from flask import request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from werkzeug.security import generate_password_hash, check_password_hash
+from utils.blacklist import BLACKLIST
 
 
 def auth_route(app, users_collection):
@@ -41,3 +42,10 @@ def auth_route(app, users_collection):
     @jwt_required()
     def is_authenticated():
         return jsonify({'result': True}), 200
+
+    @app.route("/api/v1/logout", methods=["POST"])
+    @jwt_required()
+    def logout():
+        jti = get_jwt()['jti']
+        BLACKLIST.add(jti)
+        return {"message": "Successfully logged out"}, 200
