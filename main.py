@@ -22,9 +22,14 @@ client = MongoClient(
 db = client["mydb"]
 users_collection = db["users"]
 
-home_route(app)  # home route "/"
-auth_route(app, users_collection)  # "/api/v1/register" , "/api/v1/login"
-user_route(app, users_collection)  # "/api/v1/user"
+# home route "/"
+home_route(app)
+
+# "/api/v1/register" , "/api/v1/login", "/api/v1/is-authenticated", "/api/v1/logout"
+auth_route(app, users_collection)
+
+# "/api/v1/user"
+user_route(app, users_collection)
 
 
 @jwt.invalid_token_loader
