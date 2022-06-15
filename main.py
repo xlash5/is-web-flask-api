@@ -8,6 +8,8 @@ from routes.auth import auth_route
 from routes.user import user_route
 from flask_cors import CORS
 from utils.blacklist import BLACKLIST
+from routes.posts import posts_route
+
 
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +23,7 @@ client = MongoClient(
     "mongodb+srv://enes:gyirFid2l7DOS0OM@cluster0.tjzk4.mongodb.net/?retryWrites=true&w=majority")
 db = client["mydb"]
 users_collection = db["users"]
+posts_collection = db["posts"]
 
 # home route "/"
 home_route(app)
@@ -30,6 +33,8 @@ auth_route(app, users_collection)
 
 # "/api/v1/user"
 user_route(app, users_collection)
+
+posts_route(app, posts_collection)
 
 
 @jwt.invalid_token_loader
