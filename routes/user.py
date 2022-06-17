@@ -30,3 +30,35 @@ def user_route(app, users_collection):
             return json.loads(JSONEncoder().encode({"result": user_from_db})), 200
         else:
             return jsonify({'msg': 'User not found'}), 404
+
+    @app.route("/api/v1/getFollowing", methods=["GET"])
+    @jwt_required()
+    def get_following():
+        current_user = get_jwt_identity()
+        users_from_db = users_collection.find({})
+        current_user_from_db = users_collection.find_one(
+            {'username': current_user})
+
+        user_list = []
+
+        for user in users_from_db:
+            if user['username'] in current_user_from_db['following']:
+                user_list.append(user)
+
+        return json.loads(JSONEncoder().encode({"result": user_list})), 200
+
+    @app.route("/api/v1/getNotFollowing", methods=["GET"])
+    @jwt_required()
+    def get_not_following():
+        current_user = get_jwt_identity()
+        users_from_db = users_collection.find({})
+        current_user_from_db = users_collection.find_one(
+            {'username': current_user})
+
+        user_list = []
+
+        for user in users_from_db:
+            if user['username'] not in current_user_from_db['following'] and user['username'] != current_user:
+                user_list.append(user)
+
+        return json.loads(JSONEncoder().encode({"result": user_list})), 200

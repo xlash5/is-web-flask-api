@@ -7,7 +7,7 @@ from requests import post
 from utils.encoder import JSONEncoder
 
 
-def posts_route(app, posts_collection):
+def posts_route(app, posts_collection, users_collection):
     @app.route("/api/v1/createPost", methods=["POST"])
     @jwt_required()
     def create_post():
@@ -32,10 +32,16 @@ def posts_route(app, posts_collection):
     def getPosts():
         # get all posts from collection
         all_posts = posts_collection.find({})
+        current_user = get_jwt_identity()
+        following = users_collection.find_one(
+            {"username": current_user})["following"]
 
         posts = []
         for post in all_posts:
-            posts.append(post)
+            if post["author"] == current_user:
+                posts.append(post)
+            elif post["author"] in following:
+                posts.append(post)
 
         posts.sort(key=lambda x: x['date'], reverse=True)
 

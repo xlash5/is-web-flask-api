@@ -16,6 +16,7 @@ def auth_route(app, users_collection):
         doc = users_collection.find_one(
             {"username": new_user["username"]})  # check if user exist
         if not doc:
+            new_user["following"] = []
             users_collection.insert_one(new_user)
             return jsonify({'msg': 'User created successfully'}), 201
         else:

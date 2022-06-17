@@ -35,7 +35,7 @@ auth_route(app, users_collection)
 # "/api/v1/user"
 user_route(app, users_collection)
 
-posts_route(app, posts_collection)
+posts_route(app, posts_collection, users_collection)
 
 
 @jwt.invalid_token_loader
