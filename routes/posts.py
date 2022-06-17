@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
+import time
 
 from requests import post
 from utils.encoder import JSONEncoder
@@ -20,7 +21,22 @@ def posts_route(app, posts_collection):
         postData["text"] = data["text"]
         postData["media"] = data["media"]
         postData["author"] = current_user
+        postData["date"] = time.time()
 
         posts_collection.insert_one(postData)
 
         return json.loads(JSONEncoder().encode({"result": "success"})), 200
+
+    @app.route("/api/v1/getPosts", methods=["GET"])
+    @jwt_required()
+    def getPosts():
+        # get all posts from collection
+        all_posts = posts_collection.find({})
+
+        posts = []
+        for post in all_posts:
+            posts.append(post)
+
+        posts.sort(key=lambda x: x['date'], reverse=True)
+
+        return json.loads(JSONEncoder().encode({'result': posts})), 200

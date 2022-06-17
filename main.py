@@ -12,7 +12,8 @@ from routes.posts import posts_route
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*",
+                             "allow_headers": "*", "expose_headers": "*"}})
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = os.urandom(32)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
