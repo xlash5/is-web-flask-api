@@ -43,6 +43,7 @@ def user_route(app, users_collection):
 
         for user in users_from_db:
             if user['username'] in current_user_from_db['following']:
+                del user['password']
                 user_list.append(user)
 
         return json.loads(JSONEncoder().encode({"result": user_list})), 200
@@ -59,6 +60,7 @@ def user_route(app, users_collection):
 
         for user in users_from_db:
             if user['username'] not in current_user_from_db['following'] and user['username'] != current_user:
+                del user['password']
                 user_list.append(user)
 
         return json.loads(JSONEncoder().encode({"result": user_list})), 200
