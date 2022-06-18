@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 from utils.encoder import JSONEncoder
+from bson import ObjectId
 
 
 def user_route(app, users_collection):
@@ -64,3 +65,32 @@ def user_route(app, users_collection):
                 user_list.append(user)
 
         return json.loads(JSONEncoder().encode({"result": user_list})), 200
+
+    @app.route("/api/v1/follow", methods=["POST"])
+    @jwt_required()
+    def follow():
+        data = request.get_json()
+        to_follow = data['username']
+        current_user = get_jwt_identity()
+        current_user_from_db = users_collection.find_one(
+            {'username': current_user})
+        current_user_from_db['following'].append(to_follow)
+        users_collection.find_one_and_update({'_id': ObjectId(current_user_from_db['_id'])}, {
+                                             '$set': {"following": current_user_from_db['following']}})
+
+        return json.loads(JSONEncoder().encode({"result": "followed"})), 200
+
+    @app.route("/api/v1/unfollow", methods=["POST"])
+    @jwt_required()
+    def unfollow():
+        data = request.get_json()
+        to_unfollow = data['username']
+        current_user = get_jwt_identity()
+        current_user_from_db = users_collection.find_one(
+            {'username': current_user})
+        following_arr = current_user_from_db['following']
+        following_arr.remove(to_unfollow)
+        users_collection.find_one_and_update({'_id': ObjectId(current_user_from_db['_id'])}, {
+            '$set': {"following": following_arr}})
+
+        return json.loads(JSONEncoder().encode({"result": "followed"})), 200
