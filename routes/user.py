@@ -94,3 +94,19 @@ def user_route(app, users_collection):
             '$set': {"following": following_arr}})
 
         return json.loads(JSONEncoder().encode({"result": "followed"})), 200
+
+    @app.route("/api/v1/getFollowersByUsername", methods=["POST"])
+    @jwt_required()
+    def get_followers():
+        data = request.get_json()
+        check_username = data['username']
+        users_from_db = users_collection.find({})
+
+        user_list = []
+
+        for user in users_from_db:
+            if check_username in user['following']:
+                del user['password']
+                user_list.append(user)
+
+        return json.loads(JSONEncoder().encode({"result": user_list})), 200
