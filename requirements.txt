@@ -4,4 +4,4 @@ Flask_JWT_Extended
 pymongo
 requests
 Werkzeug
-uwsgi
+gunicorn
