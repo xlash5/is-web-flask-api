@@ -2,6 +2,7 @@ Flask
 Flask_Cors
 Flask_JWT_Extended
 pymongo
+pymongo[srv]
 requests
 Werkzeug
 bson
