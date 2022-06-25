@@ -14,6 +14,7 @@ from routes.posts import posts_route
 app = Flask(__name__)
 CORS(app)
 jwt = JWTManager(app)
+app.config['SECRET_KEY'] = os.urandom(32)
 app.config['JWT_SECRET_KEY'] = os.urandom(32)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 app.config['JWT_BLACKLIST_ENABLED'] = True
