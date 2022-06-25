@@ -1,4 +1,4 @@
-gunicorn
+uwsgi
 Flask
 Flask_Cors
 Flask_JWT_Extended
