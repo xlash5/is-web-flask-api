@@ -6,4 +6,3 @@ pymongo
 pymongo[srv]
 requests
 Werkzeug
-bson
