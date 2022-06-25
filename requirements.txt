@@ -4,4 +4,5 @@ Flask_JWT_Extended
 pymongo
 requests
 Werkzeug
+bson
 uwsgi
