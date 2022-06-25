@@ -6,4 +6,4 @@ pymongo[srv]
 requests
 Werkzeug
 bson
-uwsgi
+gunicorn
