@@ -3,7 +3,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 import time
 
-from requests import post
 from utils.encoder import JSONEncoder
 
 
