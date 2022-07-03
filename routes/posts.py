@@ -47,21 +47,22 @@ def posts_route(app, posts_collection, users_collection):
         return json.loads(JSONEncoder().encode({'result': posts})), 200
 
     @app.route("/api/v1/addComment", methods=["POST"])
-    @jwt_required
+    @jwt_required()
     def addComment():
         comment_data = request.get_json()
+        print(comment_data)
 
-        curr_post = users_collection.find_one(
+        curr_post = posts_collection.find_one(
             {'_id': ObjectId(comment_data['id'])})
 
-        if curr_post['comments'] == None or curr_post['comments'] == []:
+        if 'comments' not in curr_post.keys():
             curr_post['comments'] = []
-        else:
-            curr_post['comments'].append({
-                'text': comment_data['text'],
-                'author': comment_data['author'],
-                'date': datetime.now().timestamp()*1000
-            })
+
+        curr_post['comments'].append({
+            'text': comment_data['text'],
+            'author': comment_data['author'],
+            'date': datetime.now().timestamp()*1000
+        })
 
         posts_collection.find_one_and_update({'_id': ObjectId(comment_data['id'])}, {
                                              '$set': {"comments": curr_post['comments']}})
