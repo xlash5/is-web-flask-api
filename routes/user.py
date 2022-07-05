@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 from utils.encoder import JSONEncoder
 from bson import ObjectId
+from werkzeug.security import generate_password_hash
 
 
 def user_route(app, users_collection):
@@ -110,3 +111,14 @@ def user_route(app, users_collection):
                 user_list.append(user)
 
         return json.loads(JSONEncoder().encode({"result": user_list})), 200
+
+    @app.route("/api/v1/changePassword", methods=["POST"])
+    @jwt_required()
+    def change_password():
+        data = request.get_json()
+        current_user = get_jwt_identity()
+        user_from_db = users_collection.find_one({'username': current_user})
+        users_collection.find_one_and_update({'_id': ObjectId(user_from_db['_id'])}, {
+                                             '$set': {"password": generate_password_hash(data['password'])}})
+
+        return json.loads(JSONEncoder().encode({"result": "password changed"})), 200
