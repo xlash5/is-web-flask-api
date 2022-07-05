@@ -40,12 +40,12 @@ posts_route(app, posts_collection, users_collection)
 
 @jwt.invalid_token_loader
 def missing_token_callback(error):
-    return {'result': False}, 401
+    return {'result': False, 'error': 'missing_token_callback'}, 401
 
 
 @jwt.unauthorized_loader
 def missing_token_callback(error):
-    return {'result': False}, 401
+    return {'result': False, 'error': 'unauthorized'}, 401
 
 
 @jwt.token_in_blocklist_loader
